@@ -127,6 +127,8 @@ function selectGatherLocation (location, selectedPet, userId) {
 
 function renderGatherResults (results) {
 	$('.info-window').css('display', 'block');
-
-	$('.info-window')[0].innerHTML = '<p>You found ' + results.Name + '!</p>';
+	if (results.Rarity === "Epic") {
+		$('.info-window')[0].innerHTML = '<h1>EPIC RARE</h1><p>You found ' + results.Name + '!</p> <img class="' + results.Rarity + '" src="images/' + results.Name.toLowerCase() + '.png" alt="' + results.Rarity + '">';
+	}
+	$('.info-window')[0].innerHTML = '<p>You found ' + results.Name + '!</p> <img class="' + results.Rarity + '" src="images/' + results.Name.toLowerCase() + '.png" alt="' + results.Rarity + '">';
 }
