@@ -30,7 +30,7 @@ $(document).ready(function () {
 
 			$('.feed-button').click(function() {
 				if (!$('.feed-button').hasClass('disabled')) {
-					if (pet && resourceId && Math.round(pet.Current_Health) < pet.Max_Health) {
+					if (Math.round(selectedPet.Current_Health) < selectedPet.Max_Health) {
 						var newHealth = feedPet(selectedPet, selectedResource, user.id);
 						newHealth.then(function (results) {
 							selectedPet.Current_Health = results;
