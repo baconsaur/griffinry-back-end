@@ -30,11 +30,13 @@ $(document).ready(function () {
 
 			$('.feed-button').click(function() {
 				if (!$('.feed-button').hasClass('disabled')) {
-					var newHealth = feedPet(selectedPet, selectedResource, user.id);
-					newHealth.then(function (results) {
-						selectedPet.Current_Health = results;
-						renderActivePet(selectedPet);
-					});
+					if (pet && resourceId && Math.round(pet.Current_Health) < pet.Max_Health) {
+						var newHealth = feedPet(selectedPet, selectedResource, user.id);
+						newHealth.then(function (results) {
+							selectedPet.Current_Health = results;
+							renderActivePet(selectedPet);
+						});
+					}
 				}
 			});
 
@@ -139,7 +141,6 @@ function selectResource (resource) {
 }
 
 function feedPet (pet, resourceId, userId) {
-	if (pet && resourceId && Math.round(pet.Current_Health) < pet.Max_Health) {
 	return new Promise (function (resolve, reject) {
 			var queryString = 'adoptions/feed/?userId=' + userId + '&adoptionId=' + pet.id + '&resourceId=' + resourceId;
 			$.ajax({
@@ -157,7 +158,5 @@ function feedPet (pet, resourceId, userId) {
 				}
 				resolve(results);
 			});
-		});
-	}
-	return pet.Current_Health;
+	});
 }
