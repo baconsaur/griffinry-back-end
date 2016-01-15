@@ -36,6 +36,9 @@ function populateDropdowns (optionArray, nameString) {
 	var $select = $(dropdownSelector);
 	for (var i in optionArray) {
 		$select.append(formatOptions(optionArray[i]));
+		if (nameString === 'color' && i === 0) {
+			$('.pet-image>img').src = 'images/finchet_' + optionArray[i].toLowerCase() + '.png';
+		}
 	}
 }
 
