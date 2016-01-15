@@ -117,6 +117,7 @@ function selectGatherLocation (location, selectedPet, userId) {
 				locationId: searchLocation
 			}
 		}).done(function (results) {
+			console.log(results);
 			renderGatherResults(results.resource);
 			deselectPet();
 			updatePetEnergy(selectedPet, 1);

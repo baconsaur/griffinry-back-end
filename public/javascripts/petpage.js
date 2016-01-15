@@ -30,9 +30,13 @@ $(document).ready(function () {
 
 			$('.feed-button').click(function() {
 				if (!$('.feed-button').hasClass('disabled')) {
-					selectedPet.Current_Health = Math.round(feedPet(selectedPet, selectedResource, user.id));
-					console.log(selectedPet.Current_Health);
-					renderActivePet(selectedPet);
+					if (pet && resourceId && Math.round(pet.Current_Health) < pet.Max_Health) {
+						var newHealth = feedPet(selectedPet, selectedResource, user.id);
+						newHealth.then(function (results) {
+							selectedPet.Current_Health = results;
+							renderActivePet(selectedPet);
+						});
+					}
 				}
 			});
 
@@ -98,6 +102,7 @@ function renderResourceList (resource) {
 }
 
 function renderActivePet (pet) {
+	console.log(pet);
 	var healthPercent = Math.round(pet.Current_Health / pet.Max_Health * 100) + '%';
 	var energyPercent = Math.round(pet.Current_Energy / pet.Max_Energy * 100) + '%';
 
@@ -136,22 +141,22 @@ function selectResource (resource) {
 }
 
 function feedPet (pet, resourceId, userId) {
-	if (pet && resourceId && Math.round(pet.Current_Health) < Math.round(pet.Max_Health)) {
-		var queryString = 'adoptions/feed/?userId=' + userId + '&adoptionId=' + pet.id + '&resourceId=' + resourceId;
-		$.ajax({
-			method: 'get',
-			url: queryString
-		}).done(function (results) {
-			var listItemSelector = $('.selected')[0].parentElement;
-			var quantitySelector = $(listItemSelector).children()[0];
-			var itemQuantity = parseInt($(quantitySelector).text()) - 1;
-			$(quantitySelector).text(itemQuantity);
-			if (itemQuantity === 0) {
-				listItemSelector.remove();
-				$('.feed-button').css('display', 'none');
-			}
-			return results;
-		});
-	}
-	return pet.Current_Health;
+	return new Promise (function (resolve, reject) {
+			var queryString = 'adoptions/feed/?userId=' + userId + '&adoptionId=' + pet.id + '&resourceId=' + resourceId;
+			$.ajax({
+				method: 'get',
+				url: queryString
+			}).done(function (results) {
+				console.log(results);
+				var listItemSelector = $('.selected')[0].parentElement;
+				var quantitySelector = $(listItemSelector).children()[0];
+				var itemQuantity = parseInt($(quantitySelector).text()) - 1;
+				$(quantitySelector).text(itemQuantity);
+				if (itemQuantity === 0) {
+					listItemSelector.remove();
+					$('.feed-button').css('display', 'none');
+				}
+				resolve(results);
+			});
+	});
 }
